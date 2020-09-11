@@ -14,10 +14,12 @@ io.grpc:protoc-gen-grpc-java:exe:windows-x86_64:1.31.1
 io.grpc:protoc-gen-grpc-java:exe:osx-x86_64:1.31.1
 io.grpc:protoc-gen-grpc-java:exe:linux-x86_64:1.31.1
 # grpc-java jar libs
-io.grpc:grpc-stub:1.31.1
 io.grpc:grpc-api:1.31.1
-io.grpc:grpc-protobuf:1.31.1
+io.grpc:grpc-core:1.31.1
+io.grpc:grpc-stub:1.31.1
 io.grpc:grpc-context:1.31.1
+io.grpc:grpc-protobuf:1.31.1
+io.grpc:grpc-netty:1.31.1
 # saleforce/rxgrpc protoc plugin and reactivex
 com.salesforce.servicelibs:rxgrpc:exe:windows-x86_64:1.0.1
 com.salesforce.servicelibs:rxgrpc:exe:osx-x86_64:1.0.1
@@ -27,7 +29,7 @@ com.salesforce.servicelibs:reactive-grpc-common:1.0.1
 # rxjava2 jar api
 io.reactivex.rxjava2:rxjava:2.2.19
 # guava android
-com.google.guava:guava:29.0-android
+com.google.guava:guava:26.0-android
 # grpc-ogsi-generator protoc plugin
 org.eclipse.ecf:grpc-osgi-generator:exe:windows-x86_64:1.5.4
 org.eclipse.ecf:grpc-osgi-generator:exe:osx-x86_64:1.5.4
