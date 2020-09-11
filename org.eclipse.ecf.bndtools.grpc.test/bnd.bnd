@@ -6,8 +6,9 @@ src = src-gen
         generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -I=proto --java_out=src-gen health.proto 2>errors"
            
 -buildpath: \
+    com.google.code.findbugs:jsr305;version=3.0.2,\
     com.google.protobuf:protobuf-java;version=4.0.0.rc-2,\
-    com.google.guava:guava;version=29.0.0.android,\
+    com.google.guava:guava;version=26.0.0.android,\
 	com.salesforce.servicelibs:rxgrpc-stub;version=1.0.1,\
 	com.salesforce.servicelibs:reactive-grpc-common;version=1.0.1,\
 	io.grpc:grpc-api;version='1.31',\

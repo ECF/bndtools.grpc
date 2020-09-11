@@ -37,6 +37,8 @@ org.eclipse.ecf:grpc-osgi-generator:exe:linux-x86_64:1.5.4
 # slf4j api and simple
 org.slf4j:slf4j-api:1.7.25
 org.slf4j:slf4j-simple:1.7.25
+# javax.annotation jsr305
+com.google.code.findbugs:jsr305:3.0.2
 # bnd libg
 biz.aQute.bnd:aQute.libg:5.0.0
 
