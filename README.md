@@ -48,6 +48,6 @@ Once a new bndtools workspace is created with the org.eclipse.ecf.bndtools.grpc.
 
 ![Screenshot](screenshot.png)
 
-Without any other coding, this generated service may then be used to create an OSGi Remote Service by using the '''ECF gRPC Remote Service Provider''' which is the gRPC distrubtion provider for ECF's implementation of the [OSGi Remote Services standard](https://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.remoteservices.html).  A remote service example with the health.proto generated service exists [here](https://github.com/ECF/grpc-RemoteServicesProvider/tree/master/examples).
+Without any other coding, this generated service may then be used to create an OSGi Remote Service by using the [ECF gRPC Remote Service Provider](https://github.com/ECF/grpc-RemoteServicesProvider) which is the gRPC distrubtion provider for ECF's implementation of the [OSGi Remote Services standard](https://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.remoteservices.html).  A remote service example with the health.proto generated service exists [here](https://github.com/ECF/grpc-RemoteServicesProvider/tree/master/examples).
 
 
