@@ -1,5 +1,5 @@
 # bndtools.grpc
-# Bndtools support for gRPC (Google RPC) generation of OSGi Services
+# Bndtools for gRPC (Google RPC) generation of OSGi Services
 
 This repo defines a plugin for bndtools 5.x that will:
 
