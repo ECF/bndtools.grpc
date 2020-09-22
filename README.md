@@ -3,10 +3,10 @@ Bndtools support for gRPC (Google RPC)
 
 This repo defines a plugin for bndtools 5.x that will:
 
-1. Generate [gRPC (Google RPC)](https://grpc.io/) java code to be used as the API for an OSGi Service or OSGi Remote Service.
-2. Initiate the code generation as part of the relatively new [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse-initiated auto-or-user-controlled bndtools builds.
+- Generate [gRPC (Google RPC)](https://grpc.io/) java code to be used as the API for an OSGi Service or OSGi Remote Service.
+- Initiate the code generation as part of the relatively new [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse-initiated auto-or-user-controlled bndtools builds.
 
-The developer workflow is to simply 
+## Simplified Developer Workflow for Creating gRPC Services as OSGi Services 
 
 1. Create a proto file, with a service declaration [service declaration](https://developers.google.com/protocol-buffers/docs/proto3#services) and any protocol buffers declarations needed for request types and/or response types [proto3 syntax](https://developers.google.com/protocol-buffers/docs/proto3).
 
@@ -42,7 +42,10 @@ Given the above in bnd.bnd file, the -generate command will read/parse the healt
 
 To try this out in your local copy of Eclipse bndtools 5+ all that's needed is to setup this repo as a workspace template (via Window->Preferences->Bndtools->Workspace Templates) with new Github Repository:   '''ECF/bndtools.grpc'''
 
-Once a new bndtools workspace is created with this template, and the org.eclipse.ecf.bndtools.grpc.test project is in the new workspace, the generator with run automatically (if Eclipse's auto-build is on) resulting in the following classes (see under java classes generated under org.eclipse.ecf.bndtools.grpc.test/src-gen).
+Once a new bndtools workspace is created with the org.eclipse.ecf.bndtools.grpc.test project in the new workspace, the GrpcGenerator 2ill run automatically as part of the build (assuming Eclipse's auto-build is on) resulting in the following classes in org.eclipse.ecf.bndtools.grpc.test/src-gen  
 
 ![Screenshot](screenshot.png)
+
+Without any other coding, this generated service may then be used to create an OSGi Remote Service by using the '''ECF gRPC Remote Service Provider''' which is the gRPC distrubtion provider for ECF's implementation of the [OSGi Remote Services standard](https://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.remoteservices.html).  A remote service example with the health.proto generated service exists [here](https://github.com/ECF/grpc-RemoteServicesProvider/tree/master/examples).
+
 
