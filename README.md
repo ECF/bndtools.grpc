@@ -12,7 +12,7 @@ This repo defines a plugin for bndtools 5.x that will:
 
 2.  Add the proto file to a bndtools bundle project and add the bndtools -generate command to the bnd.bnd project file.
 
-When both of these are done, the bndtools -generate command will be invoked, triggering immediate java code generation for the following:
+When both of these are done, the bndtools '''-generate''' command will be invoked, triggering immediate java code generation for the following:
 
 a. Classes corresponding to any/all request+response protocol buffers declarations.
 
@@ -44,7 +44,7 @@ Given the above in bnd.bnd file, the -generate command will read/parse the healt
 
 To try this out in your local copy of Eclipse bndtools 5+ all that's needed is to setup this repo as a workspace template (via Window->Preferences->Bndtools->Workspace Templates) with new Github Repository:   '''ECF/bndtools.grpc'''
 
-Once a new bndtools workspace is created with the org.eclipse.ecf.bndtools.grpc.test project in the new workspace, the GrpcGenerator 2ill run automatically as part of the build (assuming Eclipse's auto-build is on) resulting in the following classes in org.eclipse.ecf.bndtools.grpc.test/src-gen  
+Once a new bndtools workspace is created with the org.eclipse.ecf.bndtools.grpc.test project in the new workspace, the GrpcGenerator will run automatically as part of the build (assuming Eclipse's auto-build is on) resulting in the following classes in org.eclipse.ecf.bndtools.grpc.test/src-gen  
 
 ![Screenshot](screenshot.png)
 
