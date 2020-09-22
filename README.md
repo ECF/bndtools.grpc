@@ -44,4 +44,5 @@ To try this out in your local copy of Eclipse bndtools 5+ all that's needed is t
 
 Once a new bndtools workspace is created with this template, and the org.eclipse.ecf.bndtools.grpc.test project is in the new workspace, the generator with run automatically (if Eclipse's auto-build is on) resulting in the following classes (see under java classes generated under org.eclipse.ecf.bndtools.grpc.test/src-gen).
 
+![Screenshot](screenshot.png)
 
