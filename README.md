@@ -4,7 +4,7 @@ Bndtools support for gRPC (Google RPC)
 This repo defines a plugin for bndtools 5.x that will:
 
 1. Generate [gRPC (Google RPC)](https://grpc.io/) java code to be used as the API for an OSGi Service or OSGi Remote Service
-2. Initiate the code generation as part of the new bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse-initiated auto-or-user-controlled bndtools builds.
+2. Initiate the code generation as part of the new [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse-initiated auto-or-user-controlled bndtools builds.
 
 The developer workflow is to simply 
 
