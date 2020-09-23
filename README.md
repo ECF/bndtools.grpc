@@ -24,7 +24,7 @@ The code generation is completely redone when any change is made to the proto3 f
 
 ## Example
 
-[org.eclipse.ecf.bndtools.grpc.test](https://github.com/ECF/bndtools.grpc/tree/master/org.eclipse.ecf.bndtools.grpc.test) is an example of the bndtools plugin project ([org.eclipse.ecf.bndtools.grpc](https://github.com/ECF/bndtools.grpc/tree/master/)).  
+[org.eclipse.ecf.bndtools.grpc.test](https://github.com/ECF/bndtools.grpc/tree/master/org.eclipse.ecf.bndtools.grpc.test) is an example of usage of the bndtools plugin project ([org.eclipse.ecf.bndtools.grpc](https://github.com/ECF/bndtools.grpc/tree/master/)).  
 
 The example has a [health.proto](https://github.com/ECF/bndtools.grpc/blob/master/org.eclipse.ecf.bndtools.grpc.test/proto/health.proto) file, which is an enhanced version of the [grpc-java health example proto3 service](https://github.com/grpc/grpc-java/tree/master/services/src/main/proto/grpc/health/v1).  For the test project this implements part 1 of the above-described developer workflow.
 
