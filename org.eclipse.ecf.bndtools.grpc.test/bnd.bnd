@@ -4,7 +4,7 @@ src = src-gen
 #    proto; \
 #        output = src-gen; \
 #        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -I=proto --java_out=src-gen health.proto 2>errors"
-           
+#            
 -buildpath: \
     org.apache.tomcat:annotations-api;version=6.0.53,\
     com.google.protobuf:protobuf-java;version=4.0.0.rc-2,\
