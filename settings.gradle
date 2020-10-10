@@ -11,3 +11,5 @@ pluginManagement {
 plugins {
   id 'biz.aQute.bnd.workspace'
 }
+
+include 'org.eclipse.ecf.bndtools.grpc'

@@ -1,7 +1,3 @@
-configurations {
-    compile.exclude module: 'org.eclipse.ecf.bndtools.grpc.test'
-}
-
 tasks.named('wrapper') {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
 }
