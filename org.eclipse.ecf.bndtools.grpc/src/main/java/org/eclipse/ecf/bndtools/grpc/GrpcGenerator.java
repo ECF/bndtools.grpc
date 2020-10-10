@@ -221,7 +221,8 @@ public class GrpcGenerator {
 		// Find --java_out argument and set if not set
 		this.java_out_dir = findInArgs(argsList, "--java_out");
 		if (this.java_out_dir == null) {
-			this.java_out_dir = ".";
+			this.grpc = false;
+			this.osgi = false;
 		} else {
 			this.java_out_dir = java_out_dir.split("=")[1];
 		}
