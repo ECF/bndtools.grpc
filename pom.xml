@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.eclipse.ecf</groupId>
+	<artifactId>bndtools.grpc</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>bndtools.grpc</name>
+	<description>Bndtools plugin for protocol buffers code generation in bnd/bndtools -ganerate command
+	</description>
+	<url>https://github.com/ECF/bndtools.grpc</url>
+
+	<licenses>
+		<license>
+			<name>Apache 2 License</name>
+			<url>https://github.com/ECF/bndtools.grpc/blob/master/LICENSE
+			</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>scottslewis</id>
+			<name>Scott Lewis</name>
+			<email>scottslewis@gmail.com</email>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>org.eclipse.ecf.bndtools.grpc</module>
+	</modules>
+
+	<properties>
+		<bnd.version>5.1.2</bnd.version>
+		<aqute.libg.version>5.0.0</aqute.libg.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<java.test.version>1.8</java.test.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.test.source>${java.test.version}
+		</maven.compiler.test.source>
+		<maven.compiler.test.target>${java.test.version}
+		</maven.compiler.test.target>
+	</properties>
+
+	<scm>
+		<url>https://github.com/ECF/bndtools.grpc</url>
+		<connection>scm:git:git@github.com:ECF/bndtools.grpc.git
+		</connection>
+		<developerConnection>scm:git:git@github.com:ECF/bndtools.grpc.git
+		</developerConnection>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<!-- This is necessary for gpg to not try to use the pinentry programs -->
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
