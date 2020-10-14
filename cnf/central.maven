@@ -42,4 +42,6 @@ org.apache.tomcat:annotations-api:6.0.53
 # bnd libg
 biz.aQute.bnd:aQute.libg:5.0.0
 
+#bndtools.grpc
+org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:1.0.2
 
