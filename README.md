@@ -10,13 +10,15 @@ This repo defines a plugin for bndtools 5.x that will:
 
 The jar for org.eclipse.ecf.bndtools.grpc project is available at maven central:
 
-groupId:  ```org.eclipse.ecf```
-artifactId: '''org.eclipse.ecf.bndtools.grpc'''
+groupId:  **org.eclipse.ecf**
+
+artifactId: **org.eclipse.ecf.bndtools.grpc**
+
 version: 1.0.2 or empty for latest
 
-For a bndtools workspace with a maven central repo this will include the GrpcGenerator class in classpath:
+For a bndtools workspace with a m2 repo pointing to maven central, the following will include the GrpcGenerator class in classpath:
 
-'''org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:1.0.2'''
+**org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:1.0.2**
 
 ## Simplified Developer Workflow for generating gRPC Services as OSGi Services 
 
@@ -24,7 +26,7 @@ For a bndtools workspace with a maven central repo this will include the GrpcGen
 
 2.  Add the proto file to a bndtools bundle project and add the bndtools -generate command to the bnd.bnd project file.
 
-When both of these are done, the bndtools '''-generate''' command will be invoked, triggering immediate java code generation for the following:
+When both of these are done, the bndtools **-generate** command will be invoked, triggering immediate java code generation for the following:
 
 a. Classes corresponding to any/all request+response protocol buffers declarations.
 
@@ -50,16 +52,14 @@ Here is a the test project's generate command
         output = src-gen; \
         generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -I=proto --java_out=src-gen health.proto 2>errors"
  ```
-'''output = src-gen''' puts the generated code in the '''src-gen''' directory.  The '''org.eclipse.ecf.bndtools.grpc.GrpcGenerator''' is the java main class for the bndtools plugin.  '''--java_out=src-gen''' also points to the '''src-gen''' directory.  '''-I=proto''' specifies the include directory to look for proto files.  '''health.proto''' is the name of the proto source file in the proto directory.
+**output = src-gen** puts the generated code in the **src-gen** directory.  The **org.eclipse.ecf.bndtools.grpc.GrpcGenerator** is the java main class for the bndtools plugin.  **--java_out=src-gen** also points to the **src-gen** directory.  **-I=proto** specifies the include directory to look for proto files.  **health.proto** is the name of the proto source file in the proto directory.
 
 Given the above in bnd.bnd file, the -generate command will read/parse the health.proto file and use the GrpcGenerator to generated the classes listed above.
 
-To try this out in your local copy of Eclipse bndtools 5+ all that's needed is to setup this repo as a workspace template (via Window->Preferences->Bndtools->Workspace Templates) with new Github Repository:   '''ECF/bndtools.grpc'''
+To try this out in your local copy of Eclipse bndtools 5+ all that's needed is to setup this repo as a workspace template (via Window->Preferences->Bndtools->Workspace Templates) with new Github Repository:   **ECF/bndtools.grpc**
 
 Once a new bndtools workspace is created with the org.eclipse.ecf.bndtools.grpc.test project in the new workspace, the GrpcGenerator will run automatically as part of the build (assuming Eclipse's auto-build is on) resulting in the following classes in org.eclipse.ecf.bndtools.grpc.test/src-gen  
 
 ![Screenshot](screenshot.png)
 
 Without any other coding, this generated service may then be used to create an OSGi Remote Service by using the [ECF gRPC Remote Service Provider](https://github.com/ECF/grpc-RemoteServicesProvider) which is the gRPC distrubtion provider for ECF's implementation of the [OSGi Remote Services standard](https://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.remoteservices.html).  A remote service example with the health.proto generated service exists [here](https://github.com/ECF/grpc-RemoteServicesProvider/tree/master/examples).
-
-
