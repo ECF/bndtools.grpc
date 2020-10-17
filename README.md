@@ -10,7 +10,7 @@ This repo defines a plugin for bndtools 5.x that will:
 
 The jar for org.eclipse.ecf.bndtools.grpc project is available at maven central:
 
-groupId:  '''org.eclipse.ecf'''
+groupId:  ```org.eclipse.ecf```
 artifactId: '''org.eclipse.ecf.bndtools.grpc'''
 version: 1.0.2 or empty for latest
 
