@@ -33,5 +33,5 @@ JPM-Command protoc
 
 #-conditionalpackage: aQute*, org.slf*
 	
-Bundle-Version: 1.0.2.${tstamp}
+Bundle-Version: 1.0.3.${tstamp}
 Export-Package: org.eclipse.ecf.bndtools.grpc

@@ -65,8 +65,8 @@ public class GrpcGenerator {
 			put(RXGRPC_TARGET_NAME, new ArrayList<String>() {
 				{
 					add("/exe/rxgrpc-windows-x86_64");
-					add("/exe/rxgrpc-java-osx-x86_64");
-					add("/exe/rxgrpc-java-linux-x86_64");
+					add("/exe/rxgrpc-osx-x86_64");
+					add("/exe/rxgrpc-linux-x86_64");
 				}
 			});
 			put(GRPC_OSGI_TARGET_NAME, new ArrayList<String>() {
