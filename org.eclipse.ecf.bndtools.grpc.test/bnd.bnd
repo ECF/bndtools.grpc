@@ -3,17 +3,18 @@ src = src-gen
  -generate \
     proto; \
         output = src-gen; \
-        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -I=proto --java_out=src-gen health.proto 2>errors"
+        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator rxjava3 -I=proto --java_out=src-gen health.proto 2>errors"
             
 -buildpath: \
     org.apache.tomcat:annotations-api;version=6.0.53,\
     com.google.protobuf:protobuf-java;version=4.0.0.rc-2,\
     com.google.guava:guava;version=26.0.0.android,\
-	com.salesforce.servicelibs:rxgrpc-stub;version=1.0.1,\
+	com.salesforce.servicelibs:rx3grpc-stub;version=1.2.2,\
 	com.salesforce.servicelibs:reactive-grpc-common;version=1.0.1,\
-	io.grpc:grpc-api;version='1.31',\
-	io.grpc:grpc-protobuf;version='1.31',\
-	io.grpc:grpc-stub;version='1.31',\
-	io.grpc:grpc-context;version='1.31',\
-	io.reactivex.rxjava2:rxjava;version='2.2.19'
+	io.grpc:grpc-api;version='1.39.0',\
+	io.grpc:grpc-protobuf;version='1.39.0',\
+	io.grpc:grpc-stub;version='1.39.0',\
+	io.grpc:grpc-context;version='1.39.0',\
+	io.reactivex.rxjava3:rxjava;version='3.1.1'
+	
 	

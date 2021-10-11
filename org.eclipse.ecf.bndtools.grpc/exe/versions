@@ -1,1 +1,3 @@
-grpc-osgi-generator=1.5.9
+grpc-java=1.39.0
+rxgrpc/rx3grpc=1.2.3
+grpc-osgi-generator=1.8.1

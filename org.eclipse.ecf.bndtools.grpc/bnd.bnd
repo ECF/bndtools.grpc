@@ -12,7 +12,7 @@
 	slf4j.simple
 
 -groupid:               org.eclipse.ecf
--pom:                   version=1.0.2.${tstamp}
+-pom:                   version=1.2.1${tstamp}
 
 Bundle-Copyright:       Composent, Inc and aQute SARL. All Rights Reserved
 Bundle-Vendor:          Composent, Inc. and aQute SARL
@@ -33,5 +33,5 @@ JPM-Command protoc
 
 #-conditionalpackage: aQute*, org.slf*
 	
-Bundle-Version: 1.1.0.${tstamp}
+Bundle-Version: 1.2.1.${tstamp}
 Export-Package: org.eclipse.ecf.bndtools.grpc

@@ -28,6 +28,44 @@ import aQute.lib.io.IO;
 import aQute.lib.strings.Strings;
 import aQute.libg.command.Command;
 
+/**
+ * GrpcGenerator class provides the entry point for the bndtools code generation hook to have protoc generate
+ * java classes for a) Protocol Buffers messages; b) Grpc service class for impls and client stubs;
+ * c) reactivex-grpc code for using the reactivex api with grpc underneath; and d) the grpc-osgi-generator
+ * to generate interface classes for all the grpc services defined in the given proto files.
+ * <p>
+ * This program takes the following arguments to control it's operation along with controlling the protoc
+ * invocation.
+ * </p>
+ * <ul><li><b>nogrpc</b> - If provided, the grpc-java classes will <b>not</b> be generated
+ * <li><b>noosgi</b> - If provided, the reactivex-grpc and grpc-osgi-generator classes will <b>not</b> be generated. Note
+ * that if <b>nogrpc</b> is given then noosgi is assumed to also be set</li>
+ * <li><b>cacheDir=&lt;directory&gt;</b> - The protoc, grpc-java, reactivex-grpc, and grpc-osgi-generator binaries are copied
+ * from inside this bundle to this directory.  If not provided, defaults to <b>~/.bnd/cache</b> directory.
+ * <li><b>rxjava3</b> - If given, then the reactivex-grpc, and grpc-osgi generated classes use the reactivex version 3
+ * api.  If not given, then the reactivx version 2 api is used.
+ * <li><b>--java_out=&lt;directory&gt;</b> - This is the default directory for protoc generated java code.  It must be set</li>
+ * <li><b>--grpc-java_out=&lt;directory&gt;</b> - If set, this is the directory used for grpc-java generated code.  If not set,
+ * defaults to value of --java_out</li>
+ * <li><b>--rxgrpc_out=&lt;directory&gt;</b> - If set, this is the directory used for reactivex-grpc generated code.  If not set,
+ * defaults to value of --java_out</li>
+ * <li><b>--grpc-osgi-generated_out=&lt;directory&gt;</b> - If set, this is the directory used for grpc-osgi generated code.  If not set,
+ * defaults to value of --java_out</li></ul>
+ * <p>
+ * Note that the --java_out, --grpc-java_out, --rxjava_out, and --grpc-osgi-generated_out arguments are passed to
+ * the execution of protoc, while nogrpc, noosgi, cacheDir, and rxjava3 arguments are only for GrpcGenerator operation.
+ * </p>
+ * <p>
+ * Example
+ * </p>
+ * <pre> -generate \
+    proto; \
+        output = src-gen; \
+        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator rxjava3 -I=proto --java_out=src-gen health.proto 2&gt;errors"
+ * </pre>
+ * @author slewis
+ *
+ */
 public class GrpcGenerator {
 
 	private static final String BND_CACHE_DIR = "~/.bnd/cache";
@@ -41,6 +79,9 @@ public class GrpcGenerator {
 
 	private static final String RXGRPC_ID = "rxgrpc";
 	private static final String RXGRPC_TARGET_NAME = PROTOGEN_PREFIX + RXGRPC_ID;
+
+	private static final String RX3GRPC_ID = "rx3grpc";
+	private static final String RX3GRPC_TARGET_NAME = PROTOGEN_PREFIX + RX3GRPC_ID;
 
 	private static final String GRPC_OSGI_ID = "grpc-osgi-generator";
 	private static final String GRPC_OSGI_TARGET_NAME = PROTOGEN_PREFIX + GRPC_OSGI_ID;
@@ -67,6 +108,13 @@ public class GrpcGenerator {
 					add("/exe/rxgrpc-windows-x86_64");
 					add("/exe/rxgrpc-osx-x86_64");
 					add("/exe/rxgrpc-linux-x86_64");
+				}
+			});
+			put(RX3GRPC_TARGET_NAME, new ArrayList<String>() {
+				{
+					add("/exe/rx3grpc-windows-x86_64");
+					add("/exe/rx3grpc-osx-x86_64");
+					add("/exe/rx3grpc-linux-x86_64");
 				}
 			});
 			put(GRPC_OSGI_TARGET_NAME, new ArrayList<String>() {
@@ -189,14 +237,18 @@ public class GrpcGenerator {
 		return (opt.isPresent()) ? opt.get() : null;
 	}
 
+	private boolean rxjava3 = false;
 	private boolean osgi = true;
 	private boolean grpc = true;
 	private File cacheDir;
 	private String java_out_dir;
+	private String grpc_out_dir;
+	private String rxjava_out_dir;
+	private String grpc_osgi_out_dir;
 
-	private void processArgs(String[] args) {
+	private String[] processArgs(String[] args) {
 		// deal with args: noosgi means no osgi generation
-		List<String> argsList = Arrays.asList(args);
+		List<String> argsList = new ArrayList<String>(Arrays.asList(args));
 		// Look for 'noosgi' argument
 		final String noosgiArg = findInArgs(argsList, "noosgi");
 		if (noosgiArg != null) {
@@ -226,6 +278,19 @@ public class GrpcGenerator {
 		} else {
 			this.java_out_dir = java_out_dir.split("=")[1];
 		}
+		// Look for rx3grpc
+		final String rx3grpcArg = findInArgs(argsList, "rxjava3");
+		if (rx3grpcArg != null) {
+			argsList.remove("rxjava3");
+			this.rxjava3 = true;
+		}
+		if (this.grpc) {
+			this.grpc_out_dir = findInArgs(argsList, "--" + GRPC_ID + "_out");
+		}
+		if (this.osgi) {
+			this.rxjava_out_dir = findInArgs(argsList, "--" + (this.rxjava3 ? RX3GRPC_ID : RXGRPC_ID) + "_out");
+		}
+
 		this.cacheDir = IO.getFile(cacheDirArg);
 		if (!this.cacheDir.exists()) {
 			this.cacheDir.mkdirs();
@@ -240,10 +305,21 @@ public class GrpcGenerator {
 			}
 			log.debug("java_out dir=" + java_out_dir);
 		}
+		return argsList.toArray(new String[argsList.size()]);
+	}
+
+	void addGrpcOsgiPlugin(Command cmd, File grpcOsgiExe, String out_dir) {
+		StringBuffer sb = new StringBuffer("--plugin=");
+		sb.append(GRPC_OSGI_TARGET_NAME).append("=").append(grpcOsgiExe.getAbsolutePath());
+		cmd.add(sb.toString());
+		if (rxjava3) {
+			cmd.add("--" + GRPC_OSGI_ID + "_opt=" + "rxjava3");
+		}
+		cmd.add("--" + GRPC_OSGI_ID + "_out=" + out_dir);
 	}
 
 	void execute(String[] args) throws Exception {
-		processArgs(args);
+		args = processArgs(args);
 		// cache protoc exe
 		final File protocExe = cacheExe(cacheDir, PROTOC_TARGET_NAME);
 		final Command cmd = new Command();
@@ -253,15 +329,19 @@ public class GrpcGenerator {
 		if (grpc) {
 			// grpc-java generator protoc plugin...binary
 			File grpcExe = cacheExe(cacheDir, GRPC_TARGET_NAME);
-			addProtocPlugin(cmd, GRPC_TARGET_NAME, grpcExe.getAbsolutePath(), GRPC_ID, java_out_dir);
+			addProtocPlugin(cmd, GRPC_TARGET_NAME, grpcExe.getAbsolutePath(), GRPC_ID,
+					(this.grpc_out_dir != null ? this.grpc_out_dir : java_out_dir));
 			// only add these two if doing osgi
 			if (osgi) {
+				String rxgrpcTargetName = rxjava3 ? RX3GRPC_TARGET_NAME : RXGRPC_TARGET_NAME;
+				String rxgrpcId = rxjava3 ? RX3GRPC_ID : RXGRPC_ID;
 				// rxgrpc
-				File rxgrpcExe = cacheExe(cacheDir, RXGRPC_TARGET_NAME);
-				addProtocPlugin(cmd, RXGRPC_TARGET_NAME, rxgrpcExe.getAbsolutePath(), RXGRPC_ID, java_out_dir);
+				File rxgrpcExe = cacheExe(cacheDir, rxgrpcTargetName);
+				addProtocPlugin(cmd, rxgrpcTargetName, rxgrpcExe.getAbsolutePath(), rxgrpcId,
+						(this.rxjava_out_dir != null ? this.rxjava_out_dir : java_out_dir));
 				// grpc-osgi-generator
 				File grpcOsgiExe = cacheExe(cacheDir, GRPC_OSGI_TARGET_NAME);
-				addProtocPlugin(cmd, GRPC_OSGI_TARGET_NAME, grpcOsgiExe.getAbsolutePath(), GRPC_OSGI_ID, java_out_dir);
+				addGrpcOsgiPlugin(cmd, grpcOsgiExe, (this.grpc_osgi_out_dir != null?this.grpc_osgi_out_dir: java_out_dir));
 			}
 		}
 		// add remaining args from command line
