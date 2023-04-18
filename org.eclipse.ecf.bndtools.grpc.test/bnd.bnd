@@ -7,7 +7,7 @@ src = src-gen
             
 -buildpath: \
     org.apache.tomcat:annotations-api;version=6.0.53,\
-    com.google.protobuf:protobuf-java;version=4.0.0.rc-2,\
+    com.google.protobuf:protobuf-java;version=3.22.0,\
     com.google.guava:guava;version=26.0.0.android,\
 	com.salesforce.servicelibs:rx3grpc-stub;version=1.2.2,\
 	com.salesforce.servicelibs:reactive-grpc-common;version=1.0.1,\
