@@ -1,3 +1,4 @@
-grpc-java=1.39.0
-rxgrpc/rx3grpc=1.2.3
+protobuf=3.22.2
+grpc-java=1.54.0
+rxgrpc/rx3grpc=1.2.4
 grpc-osgi-generator=1.8.1

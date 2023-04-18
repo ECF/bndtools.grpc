@@ -1,21 +1,21 @@
 # List repository contents using GAV coordinates\\com.google.protobuf:protoc:exe:linux-aarch_64:4.0.0-rc-2
 # protobuf java
-com.google.protobuf:protobuf-java:4.0.0-rc-2
+com.google.protobuf:protobuf-java:3.22.2
 # grpc-java jar libs
-io.grpc:grpc-api:1.39.0
-io.grpc:grpc-core:1.39.0
-io.grpc:grpc-stub:1.39.0
-io.grpc:grpc-context:1.39.0
-io.grpc:grpc-protobuf:1.39.0
-io.grpc:grpc-netty:1.39.0
+io.grpc:grpc-api:1.54.0
+io.grpc:grpc-core:1.54.0
+io.grpc:grpc-stub:1.54.0
+io.grpc:grpc-context:1.54.0
+io.grpc:grpc-protobuf:1.54.0
+io.grpc:grpc-netty:1.54.0
 # saleforce/rxgrpc protoc plugin and reactivex
-com.salesforce.servicelibs:rxgrpc-stub:1.2.3
-com.salesforce.servicelibs:rx3grpc-stub:1.2.3
-com.salesforce.servicelibs:reactive-grpc-common:1.2.3
+com.salesforce.servicelibs:rxgrpc-stub:1.2.4
+com.salesforce.servicelibs:rx3grpc-stub:1.2.4
+com.salesforce.servicelibs:reactive-grpc-common:1.2.4
 # rxjava2 jar api
-io.reactivex.rxjava2:rxjava:2.2.19
+io.reactivex.rxjava2:rxjava:2.2.21
 # rxjava3 jar api
-io.reactivex.rxjava3:rxjava:3.1.1
+io.reactivex.rxjava3:rxjava:3.1.6
 # guava android
 com.google.guava:guava:26.0-android
 # slf4j api and simple
@@ -24,5 +24,5 @@ org.slf4j:slf4j-simple:1.7.25
 # javax.annotation jsr305
 org.apache.tomcat:annotations-api:6.0.53
 # bnd libg
-biz.aQute.bnd:aQute.libg:5.0.0
+biz.aQute.bnd:aQute.libg:6.4.0
 
