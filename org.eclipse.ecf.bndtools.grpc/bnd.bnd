@@ -32,5 +32,5 @@ Main-Class org.eclipse.ecf.bndtools.grpc.GrpcGenerator
 
 #-conditionalpackage: aQute*, org.slf*
 	
-Bundle-Version: 2.0.0.${tstamp}
+Bundle-Version: 2.0.1.${tstamp}
 Export-Package: org.eclipse.ecf.bndtools.grpc
