@@ -55,35 +55,19 @@ import aQute.libg.command.Command;
  * </p>
  * Program Arguments
  * <ul>
- * <li><b>[log_level=&lt;slf4j log level&gt;]</b> - Both-Optional (Applies for
- * both Java and Python gen) - Set the log_level for slf4j logger for run of
- * both Java and Python protoc invocations</li>
- * <li><b>[working_dir=&lt;directory&gt;]</b> - Both-Optional - For both Java
- * and Python protoc invocation, sets the working directory to the specified
- * directory</li>
+ * <li><b>[log_level=&lt;slf4j log level&gt;]</b> - Both-Optional (Applies for both Java and Python gen) - Set the log_level for slf4j logger for run of both Java and Python protoc invocations</li>
+ * <li><b>[working_dir=&lt;directory&gt;]</b> - Both-Optional - For both Java and Python protoc invocation, sets the working directory to the specified directory</li>
  * <li><b>[cacheDir=&lt;directory&gt;]</b> - Java-Optional - For Java protoc
  * generation, the protoc, grpc-java, reactivex-grpc, and grpc-osgi-generator
  * binaries are copied from inside this bundle to this directory for
  * invocation</li>
- * <li><b>--java_out=&lt;directory&gt;</b> - Java-Required - Directory for
- * protoc generated java code</li>
- * <li><b>[--grpc-java_out=&lt;directory&gt;]</b> - Java-Optional - Directory
- * used for grpc-java generated code. If not set, defaults to value of
- * <b>--java_out</b></li>
- * <li><b>[--grpc-osgi-generated_out=&lt;directory&gt;]</b> - Java-Optional -
- * Directory used for grpc-osgi generated code. If not set, defaults to value of
- * <b>--java_out</b></li>
- * <li><b>[python_exe=&lt;python executable&gt;]</b> - Python-Optional - Python
- * executable. Defaults to 'python', which assumes that python executable is on
- * system path. Note that full path to python executable can be provided...e.g.
- * ~/python</b></li>
- * <li><b>--python_out=&lt;directory&gt;</b> - Python-Required - Directory for
- * grpc_tools.protoc-generated python code</li>
- * <li><b>[--grpc_python_out=&lt;directory&gt;]</b> - Python-Optional -
- * Directory used for grpc-python plugin-generated code. If not set, defaults to
- * value of <b>--python_out</b></li>
- * <li><b>[--pyi_out=&lt;directory&gt;]</b> - Python-Optional - Directory used
- * for pyi-generated code. If not set, pyi file is not generated</b></li>
+ * <li><b>--java_out=&lt;directory&gt;</b> - Java-Required - Directory for protoc generated java code</li>
+ * <li><b>[--grpc-java_out=&lt;directory&gt;]</b> - Java-Optional - Directory used for grpc-java generated code. If not set, defaults to value of <b>--java_out</b></li>
+ * <li><b>[--grpc-osgi-generated_out=&lt;directory&gt;]</b> - Java-Optional - Directory used for grpc-osgi generated code. If not set, defaults to value of <b>--java_out</b></li>
+ * <li><b>[python_exe=&lt;python executable&gt;]</b> - Python-Optional - Python executable. Defaults to 'python', which assumes that python executable is on system path. Note that full path to python executable can be provided...e.g. ~/python</b></li>
+ * <li><b>--python_out=&lt;directory&gt;</b> - Python-Required - Directory for grpc_tools.protoc-generated python code</li>
+ * <li><b>[--grpc_python_out=&lt;directory&gt;]</b> - Python-Optional - Directory used for grpc-python plugin-generated code. If not set, defaults to value of <b>--python_out</b></li>
+ * <li><b>[--pyi_out=&lt;directory&gt;]</b> - Python-Optional - Directory used for pyi-generated code. If not set, pyi file is not generated</b></li>
  * </ul>
  * <p>
  * </p>
