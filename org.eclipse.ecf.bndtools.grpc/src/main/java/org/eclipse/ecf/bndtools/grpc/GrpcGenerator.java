@@ -9,6 +9,8 @@
 package org.eclipse.ecf.bndtools.grpc;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -20,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,23 +41,18 @@ import aQute.libg.command.Command;
  * This program takes the following arguments to control it's operation along with controlling the protoc
  * invocation.
  * </p>
- * <ul><li><b>nogrpc</b> - If provided, the grpc-java classes will <b>not</b> be generated
- * <li><b>noosgi</b> - If provided, the reactivex-grpc and grpc-osgi-generator classes will <b>not</b> be generated. Note
- * that if <b>nogrpc</b> is given then noosgi is assumed to also be set</li>
- * <li><b>cacheDir=&lt;directory&gt;</b> - The protoc, grpc-java, reactivex-grpc, and grpc-osgi-generator binaries are copied
- * from inside this bundle to this directory.  If not provided, defaults to <b>~/.bnd/cache</b> directory.
+ * <ul><li><b>cacheDir=&lt;directory&gt;</b> - The protoc, grpc-java, reactivex-grpc, and grpc-osgi-generator binaries are copied
+ * from inside this bundle to this directory.  If not provided, defaults to <b>~/.bnd/cache</b> directory.</li>
  * <li><b>rxjava3</b> - If given, then the reactivex-grpc, and grpc-osgi generated classes use the reactivex version 3
  * api.  If not given, then the reactivx version 2 api is used.
  * <li><b>--java_out=&lt;directory&gt;</b> - This is the default directory for protoc generated java code.  It must be set</li>
  * <li><b>--grpc-java_out=&lt;directory&gt;</b> - If set, this is the directory used for grpc-java generated code.  If not set,
  * defaults to value of --java_out</li>
- * <li><b>--rxgrpc_out=&lt;directory&gt;</b> - If set, this is the directory used for reactivex-grpc generated code.  If not set,
- * defaults to value of --java_out</li>
  * <li><b>--grpc-osgi-generated_out=&lt;directory&gt;</b> - If set, this is the directory used for grpc-osgi generated code.  If not set,
  * defaults to value of --java_out</li></ul>
  * <p>
- * Note that the --java_out, --grpc-java_out, --rxjava_out, and --grpc-osgi-generated_out arguments are passed to
- * the execution of protoc, while nogrpc, noosgi, cacheDir, and rxjava3 arguments are only for GrpcGenerator operation.
+ * Note that the --java_out, --grpc-java_out, and --grpc-osgi-generated_out arguments are passed to
+ * the execution of protoc (java), while cacheDir argument are only for GrpcGenerator operation.
  * </p>
  * <p>
  * Example
@@ -68,17 +67,19 @@ import aQute.libg.command.Command;
  */
 public class GrpcGenerator {
 
-	private static final String BND_CACHE_DIR = "~/.bnd/cache";
 	private static final Logger log = LoggerFactory.getLogger(GrpcGenerator.class.getName());
-	private static final String PROTOC_TARGET_NAME = "protoc";
 
+	private static final String CACHE_DIR = "cacheDir";
+	private static final String BND_CACHE_DIR = "~/.bnd/cache";
+	private static final String RXJAVA3 = "rxjava3";
+
+	private static final String PROTOC_TARGET_NAME = "protoc";
 	private static final String PROTOGEN_PREFIX = "protoc-gen-";
+	
+	private static final String JAVA_OUT_ID = "java_out";
 
 	private static final String GRPC_ID = "grpc-java";
 	private static final String GRPC_TARGET_NAME = PROTOGEN_PREFIX + GRPC_ID;
-
-	private static final String RXGRPC_ID = "rxgrpc";
-	private static final String RXGRPC_TARGET_NAME = PROTOGEN_PREFIX + RXGRPC_ID;
 
 	private static final String RX3GRPC_ID = "rx3grpc";
 	private static final String RX3GRPC_TARGET_NAME = PROTOGEN_PREFIX + RX3GRPC_ID;
@@ -86,6 +87,15 @@ public class GrpcGenerator {
 	private static final String GRPC_OSGI_ID = "grpc-osgi-generator";
 	private static final String GRPC_OSGI_TARGET_NAME = PROTOGEN_PREFIX + GRPC_OSGI_ID;
 
+	private static final String PYTHON_ID = "python";
+	private static final String PYTHON_EXE_ID = "python_exe";
+	private static final String WORKING_DIR_ID = "working_dir";
+	private static final String PYTHON_EXE_DEFAULT = "python";
+	private static final String GRPC_PYTHON_PROTOC_ID = "grpc_protoc_main";
+	private static final String GRPC_PROTOC_FILE = "grpc_protoc.py";
+	
+	private static final String GRPC_GENERATOR_PROPERTIES_FILE = "grpcgenerator.properties";
+	
 	@SuppressWarnings("serial")
 	private Map<String, List<String>> targetExeMap = new HashMap<String, List<String>>() {
 		{
@@ -103,13 +113,6 @@ public class GrpcGenerator {
 					add("/exe/grpc-java-linux-x86_64");
 				}
 			});
-			put(RXGRPC_TARGET_NAME, new ArrayList<String>() {
-				{
-					add("/exe/rxgrpc-windows-x86_64");
-					add("/exe/rxgrpc-osx-x86_64");
-					add("/exe/rxgrpc-linux-x86_64");
-				}
-			});
 			put(RX3GRPC_TARGET_NAME, new ArrayList<String>() {
 				{
 					add("/exe/rx3grpc-windows-x86_64");
@@ -124,9 +127,23 @@ public class GrpcGenerator {
 					add("/exe/grpc-osgi-generator-linux-x86_64");
 				}
 			});
+			put(GRPC_PROTOC_FILE, new ArrayList<String>() {
+				{
+					add(GRPC_PROTOC_FILE);
+					add(GRPC_PROTOC_FILE);
+					add(GRPC_PROTOC_FILE);
+				}
+			});
+
 		}
 	};
 
+	private void debug(String out) {
+		if (log.isDebugEnabled()) {
+			log.debug(out);
+		}
+	}
+	
 	private String getOsName() {
 		return System.getProperty("os.name").toLowerCase();
 	}
@@ -152,14 +169,12 @@ public class GrpcGenerator {
 		return Long.parseLong(Strings.trim(timestamp));
 	}
 
-	private File cacheFile(File cacheDir, String fileName) throws IOException {
-		if (log.isDebugEnabled()) {
-			log.debug("checking cache for file=" + fileName + " in cacheDir=" + cacheDir.getAbsolutePath());
-		}
+	private File cacheFile(File cacheDir, String fileName, boolean exe) throws IOException {
+		debug("checking cache for file=" + fileName + " in cacheDir=" + cacheDir.getAbsolutePath());
 		// Look for target file
 		File f = IO.getFile(cacheDir, fileName);
 		// if windows and !f.exists() and f not a jar
-		if (isWindows() && !f.exists() && !f.getAbsolutePath().endsWith(".jar")) {
+		if (exe && isWindows() && !f.exists() && !f.getAbsolutePath().endsWith(".jar")) {
 			f = IO.getFile(cacheDir, fileName + ".exe");
 		}
 		long modified = getModified();
@@ -186,32 +201,24 @@ public class GrpcGenerator {
 			if (resource == null) {
 				throw new IllegalArgumentException("Corrupt jar, not found " + name);
 			}
-			if (log.isDebugEnabled()) {
-				log.debug("cacheDir=" + cacheDir.getAbsolutePath() + ";targetFileName=" + fileName);
-			}
-			if (log.isDebugEnabled()) {
-				log.debug("copying embedded resource=" + fileName + " to cacheDir=" + cacheDir.getAbsolutePath());
-			}
+			debug("cacheDir=" + cacheDir.getAbsolutePath() + ";targetFileName=" + fileName);
+			debug("copying embedded resource=" + fileName + " to cacheDir=" + cacheDir.getAbsolutePath());
 			// copy from the resource to the target file f
 			IO.copy(resource, f);
 			f.setLastModified(modified);
 			// If not windows, set perms
 			if (!isWindows()) {
-				if (log.isDebugEnabled()) {
-					log.debug("setting permissions for file=" + f.getAbsolutePath());
-				}
+				debug("setting permissions for file=" + f.getAbsolutePath());
 				Files.setPosixFilePermissions(f.toPath(), EnumSet.of(PosixFilePermission.OWNER_EXECUTE,
 						PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE));
 			}
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("cache includes file=" + f.getAbsolutePath());
-		}
+		debug("cache includes file=" + f.getAbsolutePath());
 		return f;
 	}
 
 	private File cacheExe(File cacheDir, String targetName) throws IOException {
-		File f = cacheFile(cacheDir, targetName);
+		File f = cacheFile(cacheDir, targetName, true);
 		if (f == null)
 			throw new IllegalArgumentException(
 					"Cannot find " + targetName + " to copy to " + cacheDir.getAbsolutePath());
@@ -232,127 +239,255 @@ public class GrpcGenerator {
 		}
 	}
 
-	private String findInArgs(List<String> argsList, String argStart) {
-		Optional<String> opt = argsList.stream().filter(arg -> arg.startsWith(argStart)).findFirst();
-		return (opt.isPresent()) ? opt.get() : null;
-	}
-
-	private boolean rxjava3 = false;
-	private boolean osgi = true;
-	private boolean grpc = true;
+	private boolean java = true;
 	private File cacheDir;
+	private File working_dir;
 	private String java_out_dir;
 	private String grpc_out_dir;
 	private String rxjava_out_dir;
 	private String grpc_osgi_out_dir;
-
-	private String[] processArgs(String[] args) {
-		// deal with args: noosgi means no osgi generation
-		List<String> argsList = new ArrayList<String>(Arrays.asList(args));
-		// Look for 'noosgi' argument
-		final String noosgiArg = findInArgs(argsList, "noosgi");
-		if (noosgiArg != null) {
-			argsList.remove("noosgi");
-			osgi = false;
+	private boolean python = false;
+	private String pythonExe = PYTHON_EXE_DEFAULT;
+	private String pyiVal = null;
+	private String grpcProtocAbsolutePath;
+	
+	private class Args {
+		
+		public List<String> javaArgs;
+		public List<String> pythonArgs;
+		
+		public Args(String[] cmdLineArgs) {
+			this.javaArgs = new ArrayList<String>(Arrays.asList(cmdLineArgs));
+			this.pythonArgs = new ArrayList<String>(Arrays.asList(cmdLineArgs));
 		}
-		// 'nogrpc' argument. If 'nogrpc' argument is set then noosgi is implied
-		String nogrpcArg = findInArgs(argsList, "nogrpc");
-		boolean grpc = true;
-		if (nogrpcArg != null) {
-			argsList.remove("nogrpc");
-			grpc = false;
+		
+		private List<String> filter(List<String> input, String arg) {
+			return input.stream().filter(i -> !i.startsWith(arg)).collect(Collectors.toList());
 		}
+		
+		public void removeJava(String arg) {
+			javaArgs = filter(javaArgs, arg);
+		}
+		
+		public void removePython(String arg) {
+			pythonArgs = filter(pythonArgs, arg);
+		}
+		
+		public void removeBoth(String arg) {
+			removeJava(arg);
+			removePython(arg);
+		}
+	}
+	
+	private String findValueForArg(List<String> argList, Properties props, String arg, String def) {
+		// First check command line argsList
+		Optional<String> opt = argList.stream().filter(arg1 -> arg1.startsWith(arg)).findFirst();
+		String value = (opt.isPresent()) ? opt.get() : null;
+		if (value == null) {
+			value = props.getProperty(arg, def);
+		} else if (value.startsWith(arg)) {
+			if (value.length() > arg.length()) {
+				return value.split("=")[1];
+			} else {
+				return "true";
+			}
+		}
+		return (value != null)?value:def;
+	}
+	
+	private Args processArgs(String[] args) {
+		Args allArgs = new Args(args);
+		// load properties
+		Properties props = new Properties();
+		try {
+			props.load(new FileReader(new File(GRPC_GENERATOR_PROPERTIES_FILE)));
+		} catch (FileNotFoundException e) {
+			if (log.isWarnEnabled()) {
+				log.warn("grpcgenerator.properties file not found");
+			}
+		} catch (IOException e) {
+			if (log.isErrorEnabled()) {
+				log.error("grpcgenerator.properties read IOException");
+			}
+			e.printStackTrace();
+		}
+		debug("properties loaded from grpcgenerator.properties="+props);
 		// cacheDir argument
-		String cacheDirArg = findInArgs(argsList, "cacheDir");
-		if (cacheDirArg == null) {
-			cacheDirArg = BND_CACHE_DIR;
-		} else {
-			cacheDirArg = cacheDirArg.split("=")[1];
-			argsList.remove("cacheDir");
-		}
-		// Find --java_out argument and set if not set
-		this.java_out_dir = findInArgs(argsList, "--java_out");
-		if (this.java_out_dir == null) {
-			this.grpc = false;
-			this.osgi = false;
-		} else {
-			this.java_out_dir = java_out_dir.split("=")[1];
-		}
-		// Look for rx3grpc
-		final String rx3grpcArg = findInArgs(argsList, "rxjava3");
-		if (rx3grpcArg != null) {
-			argsList.remove("rxjava3");
-			this.rxjava3 = true;
-		}
-		if (this.grpc) {
-			this.grpc_out_dir = findInArgs(argsList, "--" + GRPC_ID + "_out");
-		}
-		if (this.osgi) {
-			this.rxjava_out_dir = findInArgs(argsList, "--" + (this.rxjava3 ? RX3GRPC_ID : RXGRPC_ID) + "_out");
-		}
-
+		final String cacheDirArg = findValueForArg(allArgs.javaArgs, props, CACHE_DIR, BND_CACHE_DIR);
+		allArgs.removeBoth(CACHE_DIR);
+		// Create cacheDir/targetDir
 		this.cacheDir = IO.getFile(cacheDirArg);
 		if (!this.cacheDir.exists()) {
 			this.cacheDir.mkdirs();
 		}
-		if (log.isDebugEnabled()) {
-			log.debug("OS=" + System.getProperty("os.name"));
-			if (!osgi) {
-				log.debug("noosgi is set");
+		debug("cacheDir="+ this.cacheDir.getAbsolutePath());
+		// --working_dir argument
+		final String workingDirArg = "--" + WORKING_DIR_ID;
+		String wdVal = findValueForArg(allArgs.javaArgs, props, workingDirArg, null);
+		if (wdVal != null) {
+			File f = new File(wdVal);
+			if (f.exists() && f.isDirectory() && f.canWrite()) {
+				this.working_dir = f;
+			} else {
+				throw new IllegalArgumentException("--working_dir=" + f.getAbsolutePath() + " is not valid");
 			}
-			if (!grpc) {
-				log.debug("nogrpc is set");
-			}
-			log.debug("java_out dir=" + java_out_dir);
 		}
-		return argsList.toArray(new String[argsList.size()]);
+		// remove from python args
+		allArgs.removeBoth(workingDirArg);
+		if (this.working_dir != null) {
+			debug("working_dir=" + this.working_dir.getAbsolutePath());
+		}
+		// rx3grpc argument...ignore and remove
+		allArgs.removeBoth(RXJAVA3);
+		allArgs.removeBoth("rxjava");
+		
+		// --java_out argument *required* for java run of protoc
+		final String javaOutArg = "--" + JAVA_OUT_ID;
+		this.java_out_dir = findValueForArg(allArgs.javaArgs, props, javaOutArg, null);
+		if (this.java_out_dir == null) {
+			this.java = false;
+		} else {
+			// remove from python args
+			allArgs.removePython(javaOutArg);
+	
+			// --grpc_out argument
+			final String grpc_out_param = "--" + GRPC_ID + "_out";
+			this.grpc_out_dir = findValueForArg(allArgs.javaArgs, props, grpc_out_param, null);//findInArgs(bothArgs.javaArgs, grpc_out_param);
+			if (grpc_out_dir == null) {
+				grpc_out_dir = this.java_out_dir;
+			}
+			allArgs.removePython(grpc_out_param);
+			// --rx3grpc_out
+			final String rx_out_param = "--" + RX3GRPC_ID + "_out";
+			this.rxjava_out_dir = findValueForArg(allArgs.javaArgs, props, rx_out_param, null);
+			if (rxjava_out_dir == null) {
+				rxjava_out_dir = java_out_dir;
+			}
+			allArgs.removePython(rx_out_param);
+			// --grpc-osgi-generator_out argument
+			final String osgi_gen_out_param = "--" + GRPC_OSGI_ID + "_out";
+			this.grpc_osgi_out_dir = findValueForArg(allArgs.javaArgs, props, osgi_gen_out_param, null);
+			if (this.grpc_osgi_out_dir == null) {
+				this.grpc_osgi_out_dir = java_out_dir;
+			}
+			allArgs.removePython(osgi_gen_out_param);
+		}
+		
+		// python
+		final String pythonOutArg = "--" + PYTHON_ID + "_out";
+		final String pythonGrpcArg = "--" + "grpc_python" + "_out";
+		final String pyiArg = "--" + "pyi" + "_out";
+		final String pythonExeArg = "--" + PYTHON_EXE_ID;
+		final String grpcProtocArg = "--" + GRPC_PYTHON_PROTOC_ID;
+		
+		// arg: --python_out=<path>
+		final String pythonArgValue = findValueForArg(allArgs.pythonArgs, props, pythonOutArg, null);
+		if (pythonArgValue != null) {
+			this.python = true;
+			// remove from java
+			allArgs.removeJava(pythonOutArg);
+			
+			// arg --python_exe=<dir>
+			this.pythonExe = findValueForArg(allArgs.pythonArgs, props, pythonExeArg, this.pythonExe);
+			allArgs.removeBoth(pythonExeArg + "=" + this.pythonExe);
+			// arg --grpc_python_out=<dir>
+			String pythonGrpcValue = findValueForArg(allArgs.pythonArgs, props, pythonGrpcArg, null);
+			if (pythonGrpcValue != null) {
+				allArgs.removeJava(pythonGrpcArg);
+			} else {
+				// add it in 
+				allArgs.pythonArgs.add(0, pythonGrpcArg + "=" + pythonArgValue);
+			}
+			// arg --grpc_protoc_main
+			this.grpcProtocAbsolutePath = findValueForArg(allArgs.pythonArgs, props, grpcProtocArg, null);
+			if (this.grpcProtocAbsolutePath == null) {
+				try {
+					File f = cacheFile(this.cacheDir, GRPC_PROTOC_FILE, false);
+					this.grpcProtocAbsolutePath = f.getAbsolutePath();
+				} catch (IOException e) {
+					// Should not happen
+					if (log.isErrorEnabled()) {
+						log.error("Could not get read grpc_protoc.py into cacheDir", e);
+					}
+				}
+			}
+			allArgs.removeBoth(grpcProtocArg);
+			
+			this.pyiVal = findValueForArg(allArgs.pythonArgs, props, pyiArg, null);
+			if (this.pyiVal != null) {
+				allArgs.removeJava(pyiArg);
+			}
+		}
+		return allArgs;
 	}
 
-	void addGrpcOsgiPlugin(Command cmd, File grpcOsgiExe, String out_dir) {
+	private void addGrpcOsgiPlugin(Command cmd, File grpcOsgiExe, String out_dir) {
 		StringBuffer sb = new StringBuffer("--plugin=");
 		sb.append(GRPC_OSGI_TARGET_NAME).append("=").append(grpcOsgiExe.getAbsolutePath());
 		cmd.add(sb.toString());
-		if (rxjava3) {
-			cmd.add("--" + GRPC_OSGI_ID + "_opt=" + "rxjava3");
-		}
+    	cmd.add("--" + GRPC_OSGI_ID + "_opt=" + RXJAVA3);
 		cmd.add("--" + GRPC_OSGI_ID + "_out=" + out_dir);
 	}
 
-	void execute(String[] args) throws Exception {
-		args = processArgs(args);
+	private void execJava(List<String> javaArgs) throws Exception {
 		// cache protoc exe
 		final File protocExe = cacheExe(cacheDir, PROTOC_TARGET_NAME);
 		final Command cmd = new Command();
 		// add protoc exe path
 		cmd.add(protocExe.getAbsolutePath());
-		// Add protoc plugins (grpc-java, rxgrpc, grpc-osgi-generator)
-		if (grpc) {
-			// grpc-java generator protoc plugin...binary
-			File grpcExe = cacheExe(cacheDir, GRPC_TARGET_NAME);
-			addProtocPlugin(cmd, GRPC_TARGET_NAME, grpcExe.getAbsolutePath(), GRPC_ID,
-					(this.grpc_out_dir != null ? this.grpc_out_dir : java_out_dir));
-			// only add these two if doing osgi
-			if (osgi) {
-				String rxgrpcTargetName = rxjava3 ? RX3GRPC_TARGET_NAME : RXGRPC_TARGET_NAME;
-				String rxgrpcId = rxjava3 ? RX3GRPC_ID : RXGRPC_ID;
-				// rxgrpc
-				File rxgrpcExe = cacheExe(cacheDir, rxgrpcTargetName);
-				addProtocPlugin(cmd, rxgrpcTargetName, rxgrpcExe.getAbsolutePath(), rxgrpcId,
-						(this.rxjava_out_dir != null ? this.rxjava_out_dir : java_out_dir));
-				// grpc-osgi-generator
-				File grpcOsgiExe = cacheExe(cacheDir, GRPC_OSGI_TARGET_NAME);
-				addGrpcOsgiPlugin(cmd, grpcOsgiExe, (this.grpc_osgi_out_dir != null?this.grpc_osgi_out_dir: java_out_dir));
-			}
+		if (this.working_dir != null) {
+			cmd.setCwd(this.working_dir);
 		}
+		// Add protoc plugins (grpc-java, rxgrpc, grpc-osgi-generator)
+		// grpc-java generator protoc plugin...binary
+		File grpcExe = cacheExe(cacheDir, GRPC_TARGET_NAME);
+		addProtocPlugin(cmd, GRPC_TARGET_NAME, grpcExe.getAbsolutePath(), GRPC_ID,
+			this.grpc_out_dir);
+		String rxgrpcTargetName = RX3GRPC_TARGET_NAME;
+		String rxgrpcId = RX3GRPC_ID;
+		// rxgrpc
+		File rxgrpcExe = cacheExe(cacheDir, rxgrpcTargetName);
+			addProtocPlugin(cmd, rxgrpcTargetName, rxgrpcExe.getAbsolutePath(), rxgrpcId,
+				this.rxjava_out_dir);
+		// grpc-osgi-generator
+		File grpcOsgiExe = cacheExe(cacheDir, GRPC_OSGI_TARGET_NAME);
+		addGrpcOsgiPlugin(cmd, grpcOsgiExe, this.grpc_osgi_out_dir);
 		// add remaining args from command line
-		cmd.add(args);
-		// execute
-		int execute = cmd.execute(System.in, System.out, System.err);
-		if (execute != 0) {
-			if (log.isDebugEnabled()) {
-				log.debug("ERROR.  resulting errorCode=" + Integer.toString(execute));
-			}
-			System.exit(execute);
+		cmd.add(javaArgs.toArray(new String[] {}));
+		// execute java generator
+		int executeJavaResult = cmd.execute(System.in, System.out, System.err);
+		if (executeJavaResult != 0) {
+			debug("ERROR running protoc for java generation.  resulting errorCode=" + Integer.toString(executeJavaResult));
+			System.exit(executeJavaResult);
+		}
+	}
+	
+	private void execPython(List<String> pythonArgs) throws Exception {
+		Command cmdPython = new Command();
+		if (this.working_dir != null) {
+			cmdPython.setCwd(this.working_dir);
+		}
+		cmdPython.add(this.pythonExe);
+		// remove .py if present so module name is used
+		cmdPython.add(this.grpcProtocAbsolutePath);
+		
+		cmdPython.add(pythonArgs.toArray(new String[] {}));
+		int executePythonResult = cmdPython.execute(System.in, System.out, System.err);
+		if (executePythonResult != 0) {
+			debug("ERROR running python generation. resulting errorCode=" + Integer.toString(executePythonResult));
+		}
+		System.exit(executePythonResult);
+	}
+	
+	void execute(String[] args) throws Exception {
+		Args allArgs = processArgs(args);
+		
+		if (this.java) { 
+			execJava(allArgs.javaArgs);
+		}
+		// Now run python if options set
+		if (python) {
+			execPython(allArgs.pythonArgs);
 		}
 	}
 

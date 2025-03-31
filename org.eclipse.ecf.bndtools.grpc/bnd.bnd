@@ -29,9 +29,8 @@ Bundle-Developers:      osgi; \
 Bundle-DocURL:          https://www.eclipse.org/ecf
 	
 Main-Class org.eclipse.ecf.bndtools.grpc.GrpcGenerator
-JPM-Command protoc
 
 #-conditionalpackage: aQute*, org.slf*
 	
-Bundle-Version: 1.3.0.${tstamp}
+Bundle-Version: 2.0.0.${tstamp}
 Export-Package: org.eclipse.ecf.bndtools.grpc
