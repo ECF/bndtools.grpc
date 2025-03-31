@@ -1,9 +1,8 @@
-src = src-gen
-
- -generate \
-    proto; \
-        output = src-gen; \
-        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator rxjava3 -I=proto --java_out=src-gen health.proto 2>errors"
+src=src-gen
+#-generate \
+#    python; \
+#        output = src-gen; \
+#        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -Ihealth --python_out=. --java_out=../src-gen --pyi_out=. --grpc_python_out=. health/health.proto 2>errors"
             
 -buildpath: \
     org.apache.tomcat:annotations-api;version=6.0.53,\
