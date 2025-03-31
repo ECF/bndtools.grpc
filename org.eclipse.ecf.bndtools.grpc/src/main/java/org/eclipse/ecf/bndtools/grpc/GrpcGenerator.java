@@ -52,15 +52,15 @@ import aQute.libg.command.Command;
  * <a href="https://pypi.org/project/grpcio-tools/">grpcio_tools</a> package and
  * all dependencies.
  * <p>
- * Program Arguments
  * </p>
+ * Program Arguments
  * <ul>
  * <li><b>[log_level=&lt;slf4j log level&gt;]</b> - Both-Optional (Applies for
  * both Java and Python gen) - Set the log_level for slf4j logger for run of
  * both Java and Python protoc invocations</li>
  * <li><b>[working_dir=&lt;directory&gt;]</b> - Both-Optional - For both Java
  * and Python protoc invocation, sets the working directory to the specified
- * directory</li> ` *
+ * directory</li>
  * <li><b>[cacheDir=&lt;directory&gt;]</b> - Java-Optional - For Java protoc
  * generation, the protoc, grpc-java, reactivex-grpc, and grpc-osgi-generator
  * binaries are copied from inside this bundle to this directory for
@@ -86,8 +86,8 @@ import aQute.libg.command.Command;
  * for pyi-generated code. If not set, pyi file is not generated</b></li>
  * </ul>
  * <p>
- * Example
  * </p>
+ * Example
  * 
  * <pre>
  *  -generate \
