@@ -1,0 +1,30 @@
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - properties loaded from grpcgenerator.properties={--python_exe=c:\python313\python}
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - checking cache for file=grpc_protoc.py in cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache;targetFileName=grpc_protoc.py
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - copying embedded resource=grpc_protoc.py to cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cache includes file=C:\Users\slewi\.bnd\cache\grpc_protoc.py
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - checking cache for file=protoc in cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache;targetFileName=protoc
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - copying embedded resource=protoc to cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cache includes file=C:\Users\slewi\.bnd\cache\protoc.exe
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - checking cache for file=protoc-gen-grpc-java in cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache;targetFileName=protoc-gen-grpc-java
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - copying embedded resource=protoc-gen-grpc-java to cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cache includes file=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-java.exe
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - checking cache for file=protoc-gen-rx3grpc in cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache;targetFileName=protoc-gen-rx3grpc
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - copying embedded resource=protoc-gen-rx3grpc to cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cache includes file=C:\Users\slewi\.bnd\cache\protoc-gen-rx3grpc.exe
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - checking cache for file=protoc-gen-grpc-osgi-generator in cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cacheDir=C:\Users\slewi\.bnd\cache;targetFileName=protoc-gen-grpc-osgi-generator
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - copying embedded resource=protoc-gen-grpc-osgi-generator to cacheDir=C:\Users\slewi\.bnd\cache
+[main] DEBUG org.eclipse.ecf.bndtools.grpc.GrpcGenerator - cache includes file=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-osgi-generator.exe
+[main] DEBUG aQute.libg.command.Command - executing cmd: [C:\Users\slewi\.bnd\cache\protoc.exe, --plugin=protoc-gen-grpc-java=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-java.exe, --grpc-java_out=src-gen, --plugin=protoc-gen-rx3grpc=C:\Users\slewi\.bnd\cache\protoc-gen-rx3grpc.exe, --rx3grpc_out=src-gen, --plugin=protoc-gen-grpc-osgi-generator=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-osgi-generator.exe, --grpc-osgi-generator_opt=rxjava3, --grpc-osgi-generator_out=src-gen, -Iprotofiles, --proto_path=protofiles, --java_out=src-gen, health/health.proto]
+[main] DEBUG aQute.libg.command.Command - exited process
+[main] DEBUG aQute.libg.command.Command - stdout/stderr streams have finished
+[main] DEBUG aQute.libg.command.Command - cmd [C:\Users\slewi\.bnd\cache\protoc.exe, --plugin=protoc-gen-grpc-java=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-java.exe, --grpc-java_out=src-gen, --plugin=protoc-gen-rx3grpc=C:\Users\slewi\.bnd\cache\protoc-gen-rx3grpc.exe, --rx3grpc_out=src-gen, --plugin=protoc-gen-grpc-osgi-generator=C:\Users\slewi\.bnd\cache\protoc-gen-grpc-osgi-generator.exe, --grpc-osgi-generator_opt=rxjava3, --grpc-osgi-generator_out=src-gen, -Iprotofiles, --proto_path=protofiles, --java_out=src-gen, health/health.proto] executed with result=0, result: java.io.PrintStream@7e774085/java.io.PrintStream@3f8f9dd6, timedout=false
+[main] DEBUG aQute.libg.command.Command - executing cmd: [python, C:\Users\slewi\.bnd\cache\grpc_protoc.py, -Iprotofiles, --proto_path=protofiles, --python_out=python/src-gen, --pyi_out=python/src-gen, --grpc_python_out=python/src-gen, health/health.proto]
+[main] DEBUG aQute.libg.command.Command - exited process
+[main] DEBUG aQute.libg.command.Command - stdout/stderr streams have finished
+[main] DEBUG aQute.libg.command.Command - cmd [python, C:\Users\slewi\.bnd\cache\grpc_protoc.py, -Iprotofiles, --proto_path=protofiles, --python_out=python/src-gen, --pyi_out=python/src-gen, --grpc_python_out=python/src-gen, health/health.proto] executed with result=0, result: java.io.PrintStream@7e774085/java.io.PrintStream@3f8f9dd6, timedout=false
