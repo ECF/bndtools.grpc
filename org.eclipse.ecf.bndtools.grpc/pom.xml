@@ -34,7 +34,7 @@
 			<!-- Use the bnd-maven-plugin and assemble the symbolic names -->
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.11.2</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -49,7 +49,7 @@
 					<doclint>accessibility,html,reference,syntax</doclint>
 					<keywords>true</keywords>
 					<version>false</version>
-					<source>8</source>
+					<source>11</source>
 				</configuration>
 			</plugin>
 			<plugin>

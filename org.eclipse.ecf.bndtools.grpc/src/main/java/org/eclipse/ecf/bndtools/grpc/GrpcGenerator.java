@@ -35,24 +35,21 @@ import aQute.libg.command.Command;
  * 
  * GrpcGenerator provides a single entry point for protoc code generation in
  * both java and python given 1 or more proto files.
- * <p>
- * </p>
+ * 
  * For Java (--java_out argument present) it will generate java source code for
  * 1) protocol buffers messages; 2) grpc service class for impls and client
  * stubs; 3) reactivex-grpc (version 3) code for using the reactivex api with
  * the reactivex-grpc implementation; and 4) the
  * <a href="https://github.com/ECF/">grpc-osgi-generator</a> to create interface
  * classes for the services declared in the proto files.
- * <p>
- * </p>
+ * 
  * For Python (--python_out argument present) it will generate java source code
  * for 1) protocol buffers messages; 2) grpc service classes for impls and
  * client stubs. This program uses/depends upon an existing install of python
  * runtime 3.9 or greater, and the prior installation of
  * <a href="https://pypi.org/project/grpcio-tools/">grpcio_tools</a> package and
  * all dependencies.
- * <p>
- * </p>
+ * 
  * Program Arguments
  * <ul>
  * <li><b>[log_level=&lt;slf4j log level&gt;]</b> - Both-Optional (Applies for both Java and Python gen) - Set the log_level for slf4j logger for run of both Java and Python protoc invocations</li>
@@ -64,13 +61,11 @@ import aQute.libg.command.Command;
  * <li><b>--java_out=&lt;directory&gt;</b> - Java-Required - Directory for protoc generated java code</li>
  * <li><b>[--grpc-java_out=&lt;directory&gt;]</b> - Java-Optional - Directory used for grpc-java generated code. If not set, defaults to value of <b>--java_out</b></li>
  * <li><b>[--grpc-osgi-generated_out=&lt;directory&gt;]</b> - Java-Optional - Directory used for grpc-osgi generated code. If not set, defaults to value of <b>--java_out</b></li>
- * <li><b>[python_exe=&lt;python executable&gt;]</b> - Python-Optional - Python executable. Defaults to 'python', which assumes that python executable is on system path. Note that full path to python executable can be provided...e.g. ~/python</b></li>
+ * <li><b>[python_exe=&lt;python executable&gt;]</b> - Python-Optional - Python executable. Defaults to 'python', which assumes that python executable is on system path. Note that full path to python executable can be provided...e.g. <b>~/python</b></li>
  * <li><b>--python_out=&lt;directory&gt;</b> - Python-Required - Directory for grpc_tools.protoc-generated python code</li>
  * <li><b>[--grpc_python_out=&lt;directory&gt;]</b> - Python-Optional - Directory used for grpc-python plugin-generated code. If not set, defaults to value of <b>--python_out</b></li>
- * <li><b>[--pyi_out=&lt;directory&gt;]</b> - Python-Optional - Directory used for pyi-generated code. If not set, pyi file is not generated</b></li>
+ * <li><b>[--pyi_out=&lt;directory&gt;]</b> - Python-Optional - Directory used for pyi-generated code. If not set, pyi file is not generated</li>
  * </ul>
- * <p>
- * </p>
  * Example
  * 
  * <pre>
