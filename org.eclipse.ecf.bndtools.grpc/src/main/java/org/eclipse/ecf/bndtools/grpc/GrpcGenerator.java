@@ -102,6 +102,7 @@ public class GrpcGenerator {
 	private static final String PYTHON_EXE_ID = "python_exe";
 	private static final String WORKING_DIR_ID = "working_dir";
 	private static final String PYTHON_EXE_DEFAULT = "python";
+	private static final String GRPC_PYTHON_ID = "grpc_python";
 	private static final String GRPC_PYTHON_PROTOC_ID = "grpc_protoc_main";
 	private static final String GRPC_PROTOC_FILE = "grpc_protoc.py";
 
@@ -388,8 +389,8 @@ public class GrpcGenerator {
 
 		// python
 		final String pythonOutArg = "--" + PYTHON_ID + "_out";
-		final String pythonGrpcArg = "--" + "grpc_python" + "_out";
-		final String pyiArg = "--" + "pyi" + "_out";
+		final String pythonGrpcArg = "--" + GRPC_PYTHON_ID + "_out";
+		final String pyiArg = "--" + "pyi_out";
 		final String pythonExeArg = PYTHON_EXE_ID;
 		final String grpcProtocArg = "--" + GRPC_PYTHON_PROTOC_ID;
 
@@ -419,7 +420,13 @@ public class GrpcGenerator {
 					}
 				}
 			}
-			allArgs.removeBoth(grpcProtocArg);
+			final String grpcProtocVal = findValueForArg(allArgs.pythonArgs, props, pythonGrpcArg, null);
+			if (grpcProtocVal == null) {
+				// should always find pythonOutArg because it has to be present as per above
+				allArgs.pythonArgs.add(allArgs.pythonArgs.indexOf(pythonOutArg + "=" + pythonArgValue) + 1,
+						pythonGrpcArg + "=" + pythonArgValue);
+			}
+			allArgs.removeJava(grpcProtocArg);
 
 			allArgs.removeJava(pyiArg);
 		}

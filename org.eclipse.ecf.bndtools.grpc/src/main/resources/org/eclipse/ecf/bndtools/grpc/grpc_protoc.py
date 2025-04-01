@@ -28,6 +28,8 @@ if __name__ == '__main__':
     for item in sys.argv:
         if item.startswith('-I'):
             add_to_python_path(item[2:])
+        if item.startswith('--proto_path='):
+            add_to_python_path(item[13:])
     # now call grpc_tools.protoc with the args provided to this script
     # and new sys.path
     protoc.main(sys.argv[1:])
