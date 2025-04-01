@@ -1,10 +1,11 @@
 # bndtools.grpc
 # Bndtools for gRPC-java (Google RPC for java) generation of OSGi Services
 
-This repo defines a plugin for bndtools 5.x that will:
+This repo defines a plugin for bndtools 7.1 that will:
 
 - Generate [gRPC (Google RPC)](https://grpc.io/) java classes that may be used as the API for an OSGi Service or OSGi Remote Service.
-- Initiate the code generation as part of the relatively new [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse auto-or-user-controlled bndtools builds.
+- Initiate the code generation via the [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse bndtools builder.
+- NEW: Python code can also now be generated.  To use, Python 3.10 or newer must be installed and [grpcio_tools](https://pypi.org/project/grpcio-tools/) and all grpcio_tools dependencies must also be installed.  Once 
 
 # Maven Central Installation
 
@@ -14,11 +15,11 @@ groupId:  **org.eclipse.ecf**
 
 artifactId: **org.eclipse.ecf.bndtools.grpc**
 
-version: 1.0.2 or empty for latest
+version: 2.0.5 or empty for latest
 
 For a bndtools workspace with a m2 repo pointing to maven central, the following will include the GrpcGenerator class in classpath:
 
-**org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:1.0.2**
+**org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:2.0.5**
 
 ## Simplified Developer Workflow for generating gRPC Services as OSGi Services 
 
@@ -50,7 +51,7 @@ Here is a the test project's generate command
 -generate \
     proto; \
         output = src-gen; \
-        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -I=proto --java_out=src-gen health.proto 2>errors"
+        generate = "org.eclipse.ecf.bndtools.grpc.GrpcGenerator -Iproto --java_out=src-gen health.proto 2>errors"
  ```
 **output = src-gen** puts the generated code in the **src-gen** directory.  The **org.eclipse.ecf.bndtools.grpc.GrpcGenerator** is the java main class for the bndtools plugin.  **--java_out=src-gen** also points to the **src-gen** directory.  **-I=proto** specifies the include directory to look for proto files.  **health.proto** is the name of the proto source file in the proto directory.
 
