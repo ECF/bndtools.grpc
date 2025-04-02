@@ -5,9 +5,9 @@ This repo defines a plugin for bndtools 7.1+ that will:
 
 - Generate [gRPC (Google RPC)](https://grpc.io/) java classes that may be used as the API for an OSGi Service or OSGi Remote Service.
 - Initiate the code generation via the [bndtools -generate support](https://bnd.bndtools.org/instructions/generate.html), which will do the code generation as part of the Eclipse bndtools builder.
-- NEW: Python code can also now be generated.  To use, Python 3.10 or newer must be installed and [grpcio_tools](https://pypi.org/project/grpcio-tools/) and all grpcio_tools dependencies must also be installed.  Once 
+- NEW: Python code can also now be generated.  To use, Python 3.10 or newer must be installed and [grpcio_tools](https://pypi.org/project/grpcio-tools/) and all grpcio_tools dependencies must also be installed.  Once these are in place, --python_out=<dir> as part of a java build will generate protoc message classes, grpc service stubs and base classes.  For an example bnd.bnd see [here].(https://github.com/ECF/bndtools.grpc/blob/master/org.eclipse.ecf.bndtools.grpc.test/bnd.bnd)
 
-# Maven Central Installation
+# Maven Installation
 
 The jar for org.eclipse.ecf.bndtools.grpc project is available at maven central:
 
@@ -17,7 +17,7 @@ artifactId: **org.eclipse.ecf.bndtools.grpc**
 
 version: 2.0.5 or empty for latest
 
-For a bndtools workspace with a m2 repo pointing to maven central, the following will include the GrpcGenerator class in classpath:
+For a bndtools workspace with a m2 repo pointing to maven central, the following GAV will include the GrpcGenerator class in classpath:
 
 **org.eclipse.ecf:org.eclipse.ecf.bndtools.grpc:2.0.5**
 
@@ -27,7 +27,7 @@ For a bndtools workspace with a m2 repo pointing to maven central, the following
 
 2.  Add the proto file to a bndtools bundle project and add the bndtools -generate command to the bnd.bnd project file.
 
-When both of these are done, the bndtools **-generate** command will be invoked, triggering immediate java code generation for the following:
+When both of these are done, the bndtools **-generate** command will be invoked, triggering immediate java code generation on build for the following:
 
 a. Classes corresponding to any/all request+response protocol buffers declarations.
 
